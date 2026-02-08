@@ -9,7 +9,7 @@
     body {
       font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; min-height: 100vh;
       display: flex; justify-content: center; align-items: center; padding: 1rem;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+      background: linear-gradient(135deg, #0f172a, #2563eb, #38bdf8);
     }
     .card {
       background: rgba(255,255,255,0.95); border-radius: 16px; padding: 1.75rem;
@@ -45,14 +45,14 @@
     <label for="bill">Bill amount ($)</label>
     <input type="number" id="bill" placeholder="0.00" min="0" step="0.01">
     <label for="tip">Tip percentage (%)</label>
-    <input type="number" id="tip" placeholder="15" min="0" max="100" value="15">
+    <input type="number" id="tip" placeholder="30" min="0" max="100" value="30">
     <button type="button" id="calc">Calculate</button>
     <!-- Validation: red error message shown when bill/tip empty, zero, or negative -->
     <p class="error-msg" id="errorMsg" aria-live="polite"></p>
     <!-- Results shown after clicking Calculate -->
     <div class="result">
-      <div><span>Tip amount:</span> <span id="tipOut">$0.00</span></div>
-      <div class="total"><span>Total:</span> <span id="totalOut">$0.00</span></div>
+      <div><span>Tip amount:</span> <span id="tipOut">₹0.00</span></div>
+      <div class="total"><span>Total:</span> <span id="totalOut">₹0.00</span></div>
     </div>
   </main>
 
@@ -64,7 +64,7 @@
     const calcBtn = document.getElementById('calc');
     const errorMsg = document.getElementById('errorMsg');
 
-    function toCurrency(n) { return '$' + Number(n).toFixed(2); }
+    function toCurrency(n) { return '₹' + Number(n).toFixed(2); }
 
     // Validation: we require bill and tip to be positive numbers.
     // Empty, zero, or negative values show a red error and skip calculation.
