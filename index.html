@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tip Calculator</title>
+  <style>
+    * { box-sizing: border-box; }
+    body {
+      font-family: 'Segoe UI', system-ui, sans-serif; margin: 0; min-height: 100vh;
+      display: flex; justify-content: center; align-items: center; padding: 1rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+    }
+    .card {
+      background: rgba(255,255,255,0.95); border-radius: 16px; padding: 1.75rem;
+      max-width: 340px; width: 100%;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+    }
+    h1 { margin: 0 0 1.25rem; font-size: 1.5rem; font-weight: 600; color: #2d3748; letter-spacing: -0.02em; }
+    label { display: block; margin-bottom: 0.35rem; font-size: 0.9rem; font-weight: 500; color: #4a5568; }
+    input {
+      width: 100%; padding: 0.65rem 0.75rem; margin-bottom: 0.85rem;
+      border: 2px solid #e2e8f0; border-radius: 10px; font-size: 1rem;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus { outline: none; border-color: #667eea; box-shadow: 0 0 0 3px rgba(102,126,234,0.2); }
+    input.error { border-color: #e53e3e; background: #fff5f5; }
+    button {
+      width: 100%; padding: 0.75rem; margin-top: 0.35rem;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: #fff; border: none; border-radius: 10px; font-size: 1rem; font-weight: 600;
+      cursor: pointer; transition: transform 0.15s, box-shadow 0.2s;
+    }
+    button:hover { transform: translateY(-1px); box-shadow: 0 8px 20px rgba(102,126,234,0.4); }
+    .error-msg { color: #c53030; font-size: 0.875rem; margin-top: 0.5rem; min-height: 1.25rem; font-weight: 500; }
+    .result { margin-top: 1.25rem; padding-top: 1.25rem; border-top: 2px solid #e2e8f0; font-size: 0.95rem; color: #4a5568; }
+    .result div { display: flex; justify-content: space-between; margin-bottom: 0.35rem; }
+    .result .total { font-weight: 700; font-size: 1.15rem; margin-top: 0.5rem; color: #2d3748; }
+  </style>
+</head>
+<body>
+  <!-- Centered card container for the form and results -->
+  <main class="card">
+    <h1>Tip Calculator</h1>
+    <label for="bill">Bill amount ($)</label>
+    <input type="number" id="bill" placeholder="0.00" min="0" step="0.01">
+    <label for="tip">Tip percentage (%)</label>
+    <input type="number" id="tip" placeholder="15" min="0" max="100" value="15">
+    <button type="button" id="calc">Calculate</button>
+    <!-- Validation: red error message shown when bill/tip empty, zero, or negative -->
+    <p class="error-msg" id="errorMsg" aria-live="polite"></p>
+    <!-- Results shown after clicking Calculate -->
+    <div class="result">
+      <div><span>Tip amount:</span> <span id="tipOut">$0.00</span></div>
+      <div class="total"><span>Total:</span> <span id="totalOut">$0.00</span></div>
+    </div>
+  </main>
+
+  <script>
+    const billInput = document.getElementById('bill');
+    const tipInput = document.getElementById('tip');
+    const tipOut = document.getElementById('tipOut');
+    const totalOut = document.getElementById('totalOut');
+    const calcBtn = document.getElementById('calc');
+    const errorMsg = document.getElementById('errorMsg');
+
+    function toCurrency(n) { return '$' + Number(n).toFixed(2); }
+
+    // Validation: we require bill and tip to be positive numbers.
+    // Empty, zero, or negative values show a red error and skip calculation.
+    function validate() {
+      const billRaw = billInput.value.trim();
+      const tipRaw = tipInput.value.trim();
+      const bill = parseFloat(billRaw);
+      const pct = parseFloat(tipRaw);
+      const billInvalid = billRaw === '' || isNaN(bill) || bill <= 0;
+      const tipInvalid = tipRaw === '' || isNaN(pct) || pct <= 0;
+      if (billInvalid || tipInvalid) {
+        errorMsg.textContent = 'Please enter a positive bill amount and tip percentage.';
+        billInput.classList.toggle('error', billInvalid);
+        tipInput.classList.toggle('error', tipInvalid);
+        return false;
+      }
+      errorMsg.textContent = '';
+      billInput.classList.remove('error');
+      tipInput.classList.remove('error');
+      return true;
+    }
+
+    calcBtn.addEventListener('click', function () {
+      if (!validate()) return;
+      const bill = parseFloat(billInput.value);
+      const pct = parseFloat(tipInput.value);
+      const tip = bill * (pct / 100);
+      const total = bill + tip;
+      tipOut.textContent = toCurrency(tip);
+      totalOut.textContent = toCurrency(total);
+    });
+  </script>
+</body>
+</html>
